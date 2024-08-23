@@ -1,0 +1,26 @@
+<!-- templates/payment_success.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}Payment Successful{% endblock %}
+
+{% block content %}
+<div class="sub-banner overview-bgi">
+    <div class="container breadcrumb-area">
+        <div class="breadcrumb-areas">
+            <h1>Our Payment-Form</h1>
+            <ul class="breadcrumbs">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li class="active">Payment</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container mt-5">
+    <h1 class="text-center">Payment Successful</h1>
+    <p class="text-center">Thank you for your payment! Your transaction was completed successfully.</p>
+    <div class="text-center">
+        <a href="{% url 'home' %}" class="btn btn-primary">Return to Home</a>
+    </div>
+</div>
+{% endblock %}

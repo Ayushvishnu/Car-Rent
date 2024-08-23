@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Our Cars Inventory | Make a Payment{% endblock %}
+
+{% block content %}
+{% load humanize %}
+
+
+<div class="sub-banner overview-bgi">
+    <div class="container breadcrumb-area">
+        <div class="breadcrumb-areas">
+            <h1>Our Payment-Form</h1>
+            <ul class="breadcrumbs">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li class="active">Payment</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Make a Payment</h1>
+    
+    <div class="card mx-auto shadow" style="max-width: 500px;">
+        <div class="card-body">
+            <form id="payment-form">
+                <div id="card-element" class="form-control mb-3">
+                    <!-- Stripe Card Element will be inserted here -->
+                </div>
+                <!-- <button type="submit" class="btn btn-primary btn-block">Pay</button> -->
+                <a href="{% url 'payment_success' %}" class="btn btn-primary">Pay</a>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var stripe = Stripe('your-publishable-key-here');
+        var elements = stripe.elements();
+        var card = elements.create('card', {
+            style: {
+                base: {
+                    fontSize: '16px',
+                    color: '#32325d',
+                    '::placeholder': {
+                        color: '#aab7c4',
+                    },
+                },
+                invalid: {
+                    color: '#fa755a',
+                },
+            }
+        });
+        card.mount('#card-element');
+
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            stripe.confirmCardPayment("{{ client_secret }}", {
+                payment_method: {
+                    card: card,
+                }
+            }).then(function(result) {
+                if (result.error) {
+                    // Show error to your customer (e.g., insufficient funds)
+                    console.error(result.error.message);
+                    alert('Payment failed: ' + result.error.message);
+                } else {
+                    if (result.paymentIntent.status === 'succeeded') {
+                        // The payment is complete!
+                        console.log('Payment successful');
+                        alert('Payment successful!');
+                        // Optionally redirect to a success page
+                        window.location.href = '{% url "payment_success" %}';
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
